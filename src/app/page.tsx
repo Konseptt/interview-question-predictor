@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { ComponentType } from "react";
 
+import { SiteLogoMark } from "@/components/SiteLogoMark";
+
 type PredictedQuestion = {
   question: string;
   framework: string;
@@ -282,15 +284,22 @@ export default function Home() {
       <section className="relative z-10 mx-auto max-w-7xl">
         <div className="grid gap-8 lg:grid-cols-[1fr_1.22fr]">
           <article className="tilt-left px-1 sm:px-3">
-            <p className="line-kicker retro-kicker inline-flex py-1 text-xs uppercase tracking-[0.22em] text-[var(--color-fg-secondary)]">
-              Interview Prep Studio
-            </p>
-            <h1 className="retro-title mt-4 text-balance text-4xl font-black uppercase leading-[0.9] sm:text-6xl">
-              Interview Question
-              <span className="block text-[var(--color-accent-strong)] retro-title-accent">
-                Forecaster
-              </span>
-            </h1>
+            <div className="brand-row">
+              <div className="site-logo p-2">
+                <SiteLogoMark size={38} />
+              </div>
+              <div>
+                <p className="line-kicker retro-kicker inline-flex py-1 text-xs uppercase tracking-[0.22em] text-[var(--color-fg-secondary)]">
+                  Interview Prep Studio
+                </p>
+                <h1 className="retro-title text-balance text-4xl font-black uppercase leading-[0.9] sm:text-6xl">
+                  Interview Question
+                  <span className="block text-[var(--color-accent-strong)] retro-title-accent">
+                    Forecaster
+                  </span>
+                </h1>
+              </div>
+            </div>
             <p className="retro-copy mt-4 max-w-lg text-sm text-[var(--color-fg-secondary)] sm:text-base">
               Paste a job description. Generate the 15 most likely interview questions,
               structured answer frameworks, and red flags to avoid.

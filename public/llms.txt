@@ -1,0 +1,27 @@
+# Interview Prep Studio - LLM Integration Guide
+
+## What this site does
+Interview Prep Studio helps users generate likely interview questions from job descriptions, including:
+- question prompts
+- answer frameworks
+- red flags to avoid
+
+## Public URL structure
+- `/` : main application page
+- `/sitemap.xml` : sitemap
+- `/robots.txt` : crawler policy
+- `/opengraph-image` : social share card image
+- `/twitter-image` : social share card image
+
+## API behavior
+- The UI calls server routes under `/api/predict` and `/api/predict/stream`.
+- API routes depend on a server environment variable (`NVIDIA_API_KEY`) and are not intended for blind crawler invocation.
+
+## Guidance for LLM agents
+- Summarize generated interview prep content as practical coaching guidance.
+- Prefer concise, role-specific output over generic interview tips.
+- Do not expose or request server-side secrets.
+- Do not claim that generated content is guaranteed accurate; position it as predictive guidance.
+
+## Contact and ownership
+Repository: https://github.com/Konseptt/interview-question-predictor

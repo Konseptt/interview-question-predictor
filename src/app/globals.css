@@ -269,6 +269,35 @@ body {
   font-family: "Courier New", "Lucida Console", monospace;
 }
 
+.brand-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.site-logo {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-bg-overlay) 70%, transparent);
+}
+
+.site-logo-mark {
+  display: block;
+}
+
+.logo-mark-ring {
+  fill: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  stroke: var(--color-accent-strong);
+}
+
+.logo-mark-lines {
+  stroke: color-mix(in srgb, var(--color-fg-secondary) 88%, var(--color-accent) 12%);
+}
+
+.logo-mark-spark {
+  fill: var(--color-accent-strong);
+}
+
 .ink-line {
   position: relative;
 }

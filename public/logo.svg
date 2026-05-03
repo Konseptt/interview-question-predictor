@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="ringLt" x1="64" y1="10" x2="64" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5672a5"/>
+      <stop offset="1" stop-color="#146f6b"/>
+    </linearGradient>
+    <linearGradient id="ringDk" x1="64" y1="10" x2="64" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7969c2"/>
+      <stop offset="1" stop-color="#7ff3e8"/>
+    </linearGradient>
+    <linearGradient id="lineLt" x1="32" y1="52" x2="96" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#263654"/>
+      <stop offset="1" stop-color="#146f6b"/>
+    </linearGradient>
+    <linearGradient id="lineDk" x1="32" y1="52" x2="96" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d6d0ff"/>
+      <stop offset="1" stop-color="#2fd7c8"/>
+    </linearGradient>
+    <linearGradient id="sparkLt" x1="104" y1="24" x2="120" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1c8f8a"/>
+      <stop offset="1" stop-color="#146f6b"/>
+    </linearGradient>
+    <linearGradient id="sparkDk" x1="104" y1="24" x2="120" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2fd7c8"/>
+      <stop offset="1" stop-color="#b8afea"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .lr { stroke: url(#ringLt); fill: color-mix(in srgb, #1c8f8a 14%, transparent); }
+    .ll { stroke: url(#lineLt); }
+    .ld { stroke: url(#sparkLt); fill: url(#sparkLt); }
+    @media (prefers-color-scheme: dark) {
+      .lr { stroke: url(#ringDk); fill: color-mix(in srgb, #2fd7c8 12%, transparent); }
+      .ll { stroke: url(#lineDk); }
+      .ld { stroke: url(#sparkDk); fill: url(#sparkDk); }
+    }
+  </style>
+  <circle class="lr" cx="64" cy="64" r="52" stroke-width="6"/>
+  <line class="ll" stroke-linecap="round" stroke-width="7" x1="34" y1="48" x2="90" y2="48"/>
+  <line class="ll" stroke-linecap="round" stroke-width="7" x1="38" y1="68" x2="86" y2="68"/>
+  <line class="ll" stroke-linecap="round" stroke-width="7" x1="42" y1="88" x2="80" y2="88"/>
+  <circle class="ld" cx="102" cy="34" r="10"/>
+</svg>
