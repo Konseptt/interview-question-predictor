@@ -368,25 +368,86 @@ body {
 }
 
 .question-strip {
-  border-left: 2px solid var(--color-accent);
-  border-bottom: 1px solid var(--color-border-subtle);
+  position: relative;
+  border-left: 3px solid var(--color-accent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border-subtle) 76%, transparent);
   background: transparent;
+}
+
+.question-strip::after {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  right: 0.4rem;
+  bottom: -7px;
+  height: 10px;
+  pointer-events: none;
+  opacity: 0.4;
+  background:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-fg-muted) 38%, transparent) 0 1px,
+      transparent 1px 8px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-bg-canvas) 8%, transparent),
+      color-mix(in srgb, var(--color-bg-canvas) 52%, transparent)
+    );
 }
 
 .card-tone-a {
   border-left-color: var(--color-accent);
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-accent) 20%, transparent),
+      transparent 65%
+    );
 }
 
 .card-tone-b {
   border-left-color: var(--color-success);
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-success) 21%, transparent),
+      transparent 65%
+    );
 }
 
 .card-tone-c {
   border-left-color: var(--color-border-strong);
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--blob-b) 19%, transparent),
+      transparent 65%
+    );
+}
+
+.question-title {
+  color: var(--color-fg-primary);
+}
+
+.question-index {
+  color: var(--color-accent-strong);
+}
+
+.question-meta {
+  color: color-mix(in srgb, var(--color-fg-primary) 86%, var(--color-fg-secondary));
+}
+
+.question-label {
+  color: var(--color-fg-primary);
 }
 
 .line-callout {
   border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.results-list {
+  scrollbar-gutter: stable;
 }
 
 .shuffle-in {

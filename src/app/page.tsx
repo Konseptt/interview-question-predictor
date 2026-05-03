@@ -85,6 +85,7 @@ export default function Home() {
       return;
     }
     // be nice to the CPU
+    // There are 10 kinds of people: those who understand binary and those who don't.
     streamFlushFrameRef.current = window.requestAnimationFrame(() => {
       streamRenderRef.current += streamBufferRef.current;
       streamBufferRef.current = "";
@@ -274,8 +275,6 @@ export default function Home() {
         phosphorMode ? "retro-mono" : ""
       }`}
     >
-      <div className="neon-blob neon-blob-a" />
-      <div className="neon-blob neon-blob-b" />
       <div className="mesh-overlay" />
       <div className={`grain-overlay ${grainEnabled ? "grain-on" : "grain-off"}`} />
       {trailEnabled && CursorTrailComponent ? <CursorTrailComponent /> : null}
@@ -284,7 +283,7 @@ export default function Home() {
         <div className="grid gap-8 lg:grid-cols-[1fr_1.22fr]">
           <article className="tilt-left px-1 sm:px-3">
             <p className="line-kicker retro-kicker inline-flex py-1 text-xs uppercase tracking-[0.22em] text-[var(--color-fg-secondary)]">
-              Career Utility v84
+              Interview Prep Studio
             </p>
             <h1 className="retro-title mt-4 text-balance text-4xl font-black uppercase leading-[0.9] sm:text-6xl">
               Interview Question
@@ -430,7 +429,7 @@ export default function Home() {
                 ))}
               </div>
             ) : questions.length > 0 ? (
-              <ol className="max-h-[72vh] space-y-3 overflow-auto pr-2">
+              <ol className="results-list max-h-[72vh] space-y-3 overflow-auto pr-2 pb-3">
                 {questions.map((item, index) => (
                   <li
                     key={`${item.question}-${index}`}
@@ -439,16 +438,16 @@ export default function Home() {
                       cardPalettes[index % cardPalettes.length]
                     } ${isShuffling ? "shuffle-in" : ""}`}
                   >
-                    <p className="text-sm font-semibold text-[var(--color-fg-primary)] sm:text-base">
-                      <span className="mr-2 text-[var(--color-accent)]">Q{index + 1}.</span>
+                    <p className="question-title text-sm font-semibold sm:text-base">
+                      <span className="question-index mr-2">Q{index + 1}.</span>
                       {item.question}
                     </p>
-                    <p className="mt-2 text-sm text-[var(--color-fg-secondary)]">
-                      <span className="font-bold text-[var(--color-fg-primary)]">Framework:</span>{" "}
+                    <p className="question-meta mt-2 text-sm">
+                      <span className="question-label font-bold">Framework:</span>{" "}
                       {item.framework}
                     </p>
-                    <p className="mt-2 text-sm text-[var(--color-fg-secondary)]">
-                      <span className="font-bold text-[var(--color-fg-primary)]">Red flag:</span>{" "}
+                    <p className="question-meta mt-2 text-sm">
+                      <span className="question-label font-bold">Red flag:</span>{" "}
                       {item.redFlag}
                     </p>
                     <div className="mt-3">
