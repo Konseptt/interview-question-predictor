@@ -1,26 +1,514 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Theme contract:
+  - `:root.theme-light` forces light
+  - `:root.theme-dark` forces dark
+  - no class => uses OS preference via media query
+  Add future themes as `:root.theme-<name>` with the same semantic tokens.
+*/
+:root,
+:root.theme-light {
+  --color-bg-canvas: #f9f4e6;
+  --color-bg-surface: #f2ead2;
+  --color-bg-muted: #e7dcb7;
+  --color-bg-overlay: #18263f12;
+
+  --color-fg-primary: #111b2f;
+  --color-fg-secondary: #263654;
+  --color-fg-muted: #445b83;
+  --color-fg-inverse: #fffdf7;
+
+  --color-border-subtle: #8b9fc4;
+  --color-border-strong: #5672a5;
+  --color-border-accent: #1c8f8a;
+
+  --color-accent: #1c8f8a;
+  --color-accent-strong: #146f6b;
+  --color-accent-soft: #d5f1ef;
+  --color-accent-contrast: #f8fffe;
+
+  --color-danger: #9b2f55;
+  --color-danger-soft: #f6dce7;
+  --color-success: #3d8a2d;
+
+  --shadow-elevated: 0 12px 30px #1a2d4a26;
+  --shadow-input: inset 0 0 0 1px #23365816, 0 8px 18px #2336581c;
+  --focus-ring: #1c8f8a80;
+
+  --noise-dot: #13213b1d;
+  --mesh-line: #13213b14;
+  --blob-a: #ff8a3d;
+  --blob-b: #7f57d6;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root.theme-dark {
+  --color-bg-canvas: #120f24;
+  --color-bg-surface: #1a1533;
+  --color-bg-muted: #221a43;
+  --color-bg-overlay: #eef3ff12;
+
+  --color-fg-primary: #f2efff;
+  --color-fg-secondary: #d6d0ff;
+  --color-fg-muted: #b8afea;
+  --color-fg-inverse: #120f24;
+
+  --color-border-subtle: #4b3f85;
+  --color-border-strong: #7969c2;
+  --color-border-accent: #2fd7c8;
+
+  --color-accent: #2fd7c8;
+  --color-accent-strong: #7ff3e8;
+  --color-accent-soft: #17363c;
+  --color-accent-contrast: #0a1f1d;
+
+  --color-danger: #ff8cae;
+  --color-danger-soft: #3f2030;
+  --color-success: #8add6d;
+
+  --shadow-elevated: 0 14px 40px #00000066;
+  --shadow-input: inset 0 0 0 1px #eaf0ff17, 0 12px 30px #00000054;
+  --focus-ring: #2fd7c880;
+
+  --noise-dot: #eef3ff24;
+  --mesh-line: #eef3ff17;
+  --blob-a: #ff7a36;
+  --blob-b: #8f59f2;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.theme-light):not(.theme-dark) {
+    --color-bg-canvas: #120f24;
+    --color-bg-surface: #1a1533;
+    --color-bg-muted: #221a43;
+    --color-bg-overlay: #eef3ff12;
+    --color-fg-primary: #f2efff;
+    --color-fg-secondary: #d6d0ff;
+    --color-fg-muted: #b8afea;
+    --color-fg-inverse: #120f24;
+    --color-border-subtle: #4b3f85;
+    --color-border-strong: #7969c2;
+    --color-border-accent: #2fd7c8;
+    --color-accent: #2fd7c8;
+    --color-accent-strong: #7ff3e8;
+    --color-accent-soft: #17363c;
+    --color-accent-contrast: #0a1f1d;
+    --color-danger: #ff8cae;
+    --color-danger-soft: #3f2030;
+    --color-success: #8add6d;
+    --shadow-elevated: 0 14px 40px #00000066;
+    --shadow-input: inset 0 0 0 1px #eaf0ff17, 0 12px 30px #00000054;
+    --focus-ring: #2fd7c880;
+    --noise-dot: #eef3ff24;
+    --mesh-line: #eef3ff17;
+    --blob-a: #ff7a36;
+    --blob-b: #8f59f2;
   }
 }
 
+@theme inline {
+  --color-background: var(--color-bg-canvas);
+  --color-foreground: var(--color-fg-primary);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg-canvas);
+  color: var(--color-fg-primary);
+  font-family: "Courier New", "Lucida Console", Monaco, monospace;
+  text-rendering: geometricPrecision;
+}
+
+.funk-stage {
+  background:
+    radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--blob-a) 26%, transparent), transparent 32%),
+    radial-gradient(circle at 88% 78%, color-mix(in srgb, var(--blob-b) 28%, transparent), transparent 28%),
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 33%),
+    linear-gradient(135deg, var(--color-bg-canvas) 0%, color-mix(in srgb, var(--color-bg-canvas) 82%, var(--color-bg-surface)) 55%, var(--color-bg-canvas) 100%);
+}
+
+.palette-matrix {
+  --color-accent: #48de6f;
+  --color-accent-strong: #8dffac;
+  --color-accent-soft: #153425;
+  --color-accent-contrast: #0a1f14;
+  --color-success: #7cff9f;
+  --color-danger: #ff8ad6;
+  --color-danger-soft: #3d1f39;
+  --blob-a: #34d06a;
+  --blob-b: #5bf7a6;
+  --focus-ring: #48de6f88;
+}
+
+.retro-screen::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.12;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 49%,
+    color-mix(in srgb, var(--color-fg-primary) 24%, transparent) 50%,
+    transparent 51%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+}
+
+.retro-mono {
+  --color-bg-canvas: #07110b;
+  --color-bg-surface: #0b1a11;
+  --color-bg-muted: #112419;
+  --color-bg-overlay: #9bffbc0f;
+
+  --color-fg-primary: #b5ffcd;
+  --color-fg-secondary: #8cf2ad;
+  --color-fg-muted: #6fd48f;
+  --color-fg-inverse: #051008;
+
+  --color-border-subtle: #2f7a4b;
+  --color-border-strong: #4ecb77;
+  --color-border-accent: #7dffab;
+
+  --color-accent: #7dffab;
+  --color-accent-strong: #b5ffcd;
+  --color-accent-soft: #123122;
+  --color-accent-contrast: #062012;
+
+  --color-danger: #91ffb0;
+  --color-danger-soft: #143325;
+  --color-success: #7dffab;
+
+  --shadow-elevated: 0 12px 34px #001108bf;
+  --shadow-input: inset 0 0 0 1px #8cffb42e, 0 8px 22px #001108ad;
+  --focus-ring: #7dffab80;
+
+  --noise-dot: #9bffbc21;
+  --mesh-line: #9bffbc18;
+  --blob-a: #3cff7a;
+  --blob-b: #2baa62;
+}
+
+.retro-mono.retro-screen::before {
+  opacity: 0.2;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 47%,
+    color-mix(in srgb, var(--color-accent) 38%, transparent) 48%,
+    transparent 49%,
+    transparent 100%
+  );
+  background-size: 100% 3px;
+}
+
+.mesh-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image:
+    linear-gradient(to right, var(--mesh-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--mesh-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, #000 48%, transparent 100%);
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+  background-image: radial-gradient(var(--noise-dot) 0.8px, transparent 0.8px);
+  background-size: 3px 3px;
+  mix-blend-mode: soft-light;
+}
+
+.grain-on {
+  opacity: 0.22;
+}
+
+.grain-off {
+  opacity: 0;
+}
+
+.tilt-left {
+  transform: rotate(-0.65deg);
+}
+
+.tilt-right {
+  transform: rotate(0.5deg);
+}
+
+.retro-kicker {
+  letter-spacing: 0.24em;
+}
+
+.retro-title {
+  letter-spacing: 0.04em;
+  text-shadow: 0.5px 0.5px 0 color-mix(in srgb, var(--color-fg-primary) 35%, transparent);
+}
+
+.retro-title-accent {
+  text-shadow: 1px 0 0 color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+.retro-label {
+  letter-spacing: 0.18em;
+}
+
+.retro-copy {
+  line-height: 1.55;
+}
+
+.retro-terminal {
+  font-family: "Courier New", "Lucida Console", monospace;
+}
+
+.ink-line {
+  position: relative;
+}
+
+.ink-line::after {
+  content: "";
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 8px;
+  border-bottom: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  transform: rotate(-1.1deg);
+}
+
+.line-kicker {
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.line-row {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.line-chip {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-fg-secondary);
+  padding: 0 0 0.3rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.line-chip:hover {
+  border-bottom-color: var(--color-border-strong);
+}
+
+.line-chip-active {
+  border-bottom-width: 2px;
+  border-bottom-color: var(--color-accent);
+}
+
+.line-cta {
+  background: color-mix(in srgb, var(--color-accent) 24%, var(--color-bg-surface));
+  border: 1px solid var(--color-accent);
+  border-bottom: 3px solid var(--color-accent-strong);
+  color: var(--color-fg-primary);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent),
+    0 0 18px color-mix(in srgb, var(--color-accent) 28%, transparent);
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    transform 120ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+  animation: ctaBlink 1.8s ease-in-out infinite;
+}
+
+.line-cta:hover {
+  border-color: var(--color-accent-strong);
+  border-bottom-color: var(--color-accent-strong);
+  background: color-mix(in srgb, var(--color-accent) 38%, var(--color-bg-surface));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent-strong) 50%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-accent) 42%, transparent);
+}
+
+.line-cta:active {
+  transform: translateY(1px);
+  animation: none;
+}
+
+.line-cta:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.line-input {
+  border: 0;
+  border-left: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-strong);
+  color: var(--color-fg-primary);
+  background: transparent;
+  font-family: "Courier New", "Lucida Console", monospace;
+}
+
+.line-input::placeholder {
+  color: var(--color-fg-muted);
+}
+
+.line-input:focus-visible {
+  outline: none;
+  border-left-color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.question-strip {
+  border-left: 2px solid var(--color-accent);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: transparent;
+}
+
+.card-tone-a {
+  border-left-color: var(--color-accent);
+}
+
+.card-tone-b {
+  border-left-color: var(--color-success);
+}
+
+.card-tone-c {
+  border-left-color: var(--color-border-strong);
+}
+
+.line-callout {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.shuffle-in {
+  animation: shuffleIn 640ms cubic-bezier(0.2, 0.75, 0.23, 1) both;
+}
+
+.skeleton-wave {
+  border-left: 2px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-fg-muted) 8%, transparent) 0%,
+    color-mix(in srgb, var(--color-fg-muted) 18%, transparent) 48%,
+    color-mix(in srgb, var(--color-fg-muted) 8%, transparent) 100%
+  );
+  background-size: 220% 100%;
+  animation: wave 1.2s linear infinite;
+}
+
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.cursor-trail-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, var(--color-fg-inverse), var(--color-accent) 60%, var(--blob-b) 100%);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-accent) 55%, transparent);
+  opacity: 0.82;
+  will-change: transform;
+}
+
+.neon-blob {
+  position: fixed;
+  z-index: 0;
+  border-radius: 9999px;
+  filter: blur(56px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.neon-blob-a {
+  width: 340px;
+  height: 340px;
+  background: var(--blob-a);
+  top: -70px;
+  left: -60px;
+}
+
+.neon-blob-b {
+  width: 390px;
+  height: 390px;
+  background: var(--blob-b);
+  right: -80px;
+  bottom: -110px;
+}
+
+@keyframes wave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+@keyframes shuffleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) rotate(-2.1deg) scale(0.985);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .tilt-left,
+  .tilt-right {
+    transform: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .cursor-trail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-wave,
+  .shuffle-in,
+  .cursor-trail {
+    animation: none;
+    display: none;
+  }
+
+  .line-cta {
+    animation: none;
+  }
+}
+
+@keyframes ctaBlink {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent),
+      0 0 14px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-accent-strong) 52%, transparent),
+      0 0 26px color-mix(in srgb, var(--color-accent) 46%, transparent);
+  }
 }
