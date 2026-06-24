@@ -83,6 +83,7 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(NVIDIA_TIMEOUT_MS),
     });
   } catch (error) {
+    console.error("NVIDIA API fetch error:", error);
     const message =
       error instanceof Error && error.name === "TimeoutError"
         ? "NVIDIA request timed out."
@@ -92,8 +93,9 @@ export async function POST(request: Request) {
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error(`NVIDIA API request failed with status ${response.status}: ${errorText}`);
     return NextResponse.json(
-      { error: `NVIDIA request failed: ${response.status} ${errorText}` },
+      { error: "NVIDIA request failed." },
       { status: 502 },
     );
   }

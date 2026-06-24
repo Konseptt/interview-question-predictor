@@ -99,6 +99,7 @@ export async function POST(request: Request) {
             signal: AbortSignal.timeout(NVIDIA_TIMEOUT_MS),
           });
         } catch (error) {
+          console.error("NVIDIA API streaming fetch error:", error);
           const message =
             error instanceof Error && error.name === "TimeoutError"
               ? "NVIDIA streaming request timed out."
@@ -110,11 +111,12 @@ export async function POST(request: Request) {
 
         if (!response.ok || !response.body) {
           const text = await response.text();
+          console.error(`NVIDIA API streaming failed with status ${response.status}: ${text}`);
           controller.enqueue(
             encoder.encode(
               line({
                 type: "error",
-                error: `NVIDIA streaming failed: ${response.status} ${text}`,
+                error: "NVIDIA streaming failed.",
               }),
             ),
           );
@@ -182,14 +184,12 @@ export async function POST(request: Request) {
           );
         }
       } catch (error) {
+        console.error("Unexpected streaming error:", error);
         controller.enqueue(
           encoder.encode(
             line({
               type: "error",
-              error:
-                error instanceof Error
-                  ? error.message
-                  : "Unexpected streaming error.",
+              error: "Unexpected streaming error.",
             }),
           ),
         );
