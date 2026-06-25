@@ -110,11 +110,12 @@ export async function POST(request: Request) {
 
         if (!response.ok || !response.body) {
           const text = await response.text();
+          console.error(`[Security Log] Upstream streaming request failed: ${response.status} ${text}`);
           controller.enqueue(
             encoder.encode(
               line({
                 type: "error",
-                error: `NVIDIA streaming failed: ${response.status} ${text}`,
+                error: "Generation streaming service is currently unavailable. Please try again later.",
               }),
             ),
           );
@@ -182,14 +183,12 @@ export async function POST(request: Request) {
           );
         }
       } catch (error) {
+        console.error("[Security Log] Streaming pipeline error:", error);
         controller.enqueue(
           encoder.encode(
             line({
               type: "error",
-              error:
-                error instanceof Error
-                  ? error.message
-                  : "Unexpected streaming error.",
+              error: "An unexpected error occurred during generation.",
             }),
           ),
         );

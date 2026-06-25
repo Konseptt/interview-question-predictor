@@ -92,8 +92,9 @@ export async function POST(request: Request) {
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error(`[Security Log] Upstream API request failed: ${response.status} ${errorText}`);
     return NextResponse.json(
-      { error: `NVIDIA request failed: ${response.status} ${errorText}` },
+      { error: "Generation service is currently unavailable. Please try again later." },
       { status: 502 },
     );
   }
