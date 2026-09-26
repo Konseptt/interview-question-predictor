@@ -1,20 +1,12 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
 import {
   buildSystemPrompt,
   extractJsonBlock,
-  INVOKE_URL,
   MODEL,
   sanitizeTonePreset,
   validateOutput,
 } from "@/lib/predictor";
-
-type NvidiaResponse = {
-  choices?: Array<{
-    message?: {
-      content?: string;
-    };
-  }>;
-};
 
 const MAX_JOB_DESCRIPTION_LENGTH = 12000;
 const NVIDIA_TIMEOUT_MS = 30000;
@@ -51,37 +43,31 @@ export async function POST(request: Request) {
     );
   }
 
-  const payload = {
-    model: MODEL,
-    messages: [
-      { role: "system", content: buildSystemPrompt(tonePreset) },
-      {
-        role: "user",
-        content:
-          "Predict interview questions for this role and respond with strict JSON only:\n\n" +
-          jobDescription,
-      },
-    ],
-    max_tokens: 1800,
-    temperature: 0.7,
-    top_p: 0.9,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    stream: false,
-  };
+  const client = new OpenAI({
+    baseURL: "https://integrate.api.nvidia.com/v1",
+    apiKey,
+    timeout: NVIDIA_TIMEOUT_MS,
+  });
 
-  let response: Response;
+  let content: string | null | undefined;
   try {
-    response = await fetch(INVOKE_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(NVIDIA_TIMEOUT_MS),
+    const completion = await client.chat.completions.create({
+      model: MODEL,
+      messages: [
+        { role: "system", content: buildSystemPrompt(tonePreset) },
+        {
+          role: "user",
+          content:
+            "Predict interview questions for this role and respond with strict JSON only:\n\n" +
+            jobDescription,
+        },
+      ],
+      temperature: 0.2,
+      top_p: 0.7,
+      max_tokens: 1024,
+      stream: false,
     });
+    content = completion.choices[0]?.message?.content;
   } catch (error) {
     const message =
       error instanceof Error && error.name === "TimeoutError"
@@ -89,17 +75,6 @@ export async function POST(request: Request) {
         : "Failed to reach NVIDIA API.";
     return NextResponse.json({ error: message }, { status: 504 });
   }
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    return NextResponse.json(
-      { error: `NVIDIA request failed: ${response.status} ${errorText}` },
-      { status: 502 },
-    );
-  }
-
-  const data = (await response.json()) as NvidiaResponse;
-  const content = data.choices?.[0]?.message?.content;
   if (!content) {
     return NextResponse.json(
       { error: "NVIDIA returned an empty completion." },

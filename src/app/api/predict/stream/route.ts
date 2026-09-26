@@ -1,20 +1,12 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
 import {
   buildSystemPrompt,
   extractJsonBlock,
-  INVOKE_URL,
   MODEL,
   sanitizeTonePreset,
   validateOutput,
 } from "@/lib/predictor";
-
-type NvidiaDeltaResponse = {
-  choices?: Array<{
-    delta?: {
-      content?: string;
-    };
-  }>;
-};
 
 type StreamPayload = {
   type: "token" | "result" | "error";
@@ -65,99 +57,42 @@ export async function POST(request: Request) {
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      let aggregate = "";
       try {
-        const payload = {
-          model: MODEL,
-          messages: [
-            { role: "system", content: buildSystemPrompt(tonePreset) },
-            {
-              role: "user",
-              content:
-                "Predict interview questions for this role and respond with strict JSON only:\n\n" +
-                jobDescription,
-            },
-          ],
-          max_tokens: 1800,
-          temperature: 0.7,
-          top_p: 0.9,
-          frequency_penalty: 0,
-          presence_penalty: 0,
-          stream: true,
-        };
+        const client = new OpenAI({
+          baseURL: "https://integrate.api.nvidia.com/v1",
+          apiKey,
+          timeout: NVIDIA_TIMEOUT_MS,
+        });
 
-        let response: Response;
+        let aggregate = "";
         try {
-          response = await fetch(INVOKE_URL, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              Accept: "text/event-stream",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-            signal: AbortSignal.timeout(NVIDIA_TIMEOUT_MS),
+          const completion = await client.chat.completions.create({
+            model: MODEL,
+            messages: [
+              { role: "system", content: buildSystemPrompt(tonePreset) },
+              {
+                role: "user",
+                content:
+                  "Predict interview questions for this role and respond with strict JSON only:\n\n" +
+                  jobDescription,
+              },
+            ],
+            temperature: 0.2,
+            top_p: 0.7,
+            max_tokens: 1024,
+            stream: false,
           });
+          aggregate = completion.choices[0]?.message?.content ?? "";
+          if (aggregate) {
+            controller.enqueue(encoder.encode(line({ type: "token", chunk: aggregate })));
+          }
         } catch (error) {
           const message =
             error instanceof Error && error.name === "TimeoutError"
               ? "NVIDIA streaming request timed out."
               : "Failed to reach NVIDIA API for streaming.";
           controller.enqueue(encoder.encode(line({ type: "error", error: message })));
-          controller.close();
           return;
-        }
-
-        if (!response.ok || !response.body) {
-          const text = await response.text();
-          controller.enqueue(
-            encoder.encode(
-              line({
-                type: "error",
-                error: `NVIDIA streaming failed: ${response.status} ${text}`,
-              }),
-            ),
-          );
-          controller.close();
-          return;
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            break;
-          }
-
-          buffer += decoder.decode(value, { stream: true });
-          const parts = buffer.split("\n");
-          buffer = parts.pop() ?? "";
-
-          for (const rawLine of parts) {
-            const trimmed = rawLine.trim();
-            if (!trimmed.startsWith("data:")) {
-              continue;
-            }
-            const data = trimmed.slice(5).trim();
-            if (!data || data === "[DONE]") {
-              continue;
-            }
-
-            try {
-              // Mr. Compiler, please do not read this.
-              const parsed = JSON.parse(data) as NvidiaDeltaResponse;
-              const chunk = parsed.choices?.[0]?.delta?.content;
-              if (chunk) {
-                aggregate += chunk;
-                controller.enqueue(encoder.encode(line({ type: "token", chunk })));
-              }
-            } catch {
-              // Ignore malformed partial events from upstream.
-            }
-          }
         }
 
         try {
@@ -169,7 +104,6 @@ export async function POST(request: Request) {
                 line({ type: "error", error: "Model output format was invalid." }),
               ),
             );
-            controller.close();
             return;
           }
 
