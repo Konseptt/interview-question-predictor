@@ -18,6 +18,12 @@ type StreamPayload = {
 const MAX_JOB_DESCRIPTION_LENGTH = 12000;
 const NVIDIA_TIMEOUT_MS = 120000;
 
+function usableReply(text: string | null | undefined): string {
+  const trimmed = text?.trim() ?? "";
+  if (!trimmed || /^!+$/.test(trimmed)) return "";
+  return trimmed;
+}
+
 function line(payload: StreamPayload): string {
   return `${JSON.stringify(payload)}\n`;
 }
@@ -81,8 +87,12 @@ export async function POST(request: Request) {
             top_p: 0.95,
             max_tokens: 1024,
             stream: false,
-          });
-          aggregate = completion.choices[0]?.message?.content ?? "";
+            reasoning_effort: "low",
+          } as OpenAI.Chat.ChatCompletionCreateParamsNonStreaming);
+          const message = completion.choices[0]?.message as
+            | { content?: string | null; reasoning_content?: string | null }
+            | undefined;
+          aggregate = usableReply(message?.content) || usableReply(message?.reasoning_content);
           if (aggregate) {
             controller.enqueue(encoder.encode(line({ type: "token", chunk: aggregate })));
           }

@@ -11,6 +11,12 @@ import {
 const MAX_JOB_DESCRIPTION_LENGTH = 12000;
 const NVIDIA_TIMEOUT_MS = 120000;
 
+function usableReply(text: string | null | undefined): string {
+  const trimmed = text?.trim() ?? "";
+  if (!trimmed || /^!+$/.test(trimmed)) return "";
+  return trimmed;
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
@@ -66,8 +72,12 @@ export async function POST(request: Request) {
       top_p: 0.95,
       max_tokens: 1024,
       stream: false,
-    });
-    content = completion.choices[0]?.message?.content;
+      reasoning_effort: "low",
+    } as OpenAI.Chat.ChatCompletionCreateParamsNonStreaming);
+    const message = completion.choices[0]?.message as
+      | { content?: string | null; reasoning_content?: string | null }
+      | undefined;
+    content = usableReply(message?.content) || usableReply(message?.reasoning_content);
   } catch (error) {
     const message =
       error instanceof Error && error.name === "TimeoutError"
