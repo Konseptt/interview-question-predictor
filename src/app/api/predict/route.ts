@@ -9,7 +9,7 @@ import {
 } from "@/lib/predictor";
 
 const MAX_JOB_DESCRIPTION_LENGTH = 12000;
-const NVIDIA_TIMEOUT_MS = 30000;
+const NVIDIA_TIMEOUT_MS = 120000;
 
 export async function POST(request: Request) {
   const apiKey = process.env.NVIDIA_API_KEY;

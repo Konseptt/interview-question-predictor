@@ -16,7 +16,7 @@ type StreamPayload = {
 };
 
 const MAX_JOB_DESCRIPTION_LENGTH = 12000;
-const NVIDIA_TIMEOUT_MS = 30000;
+const NVIDIA_TIMEOUT_MS = 120000;
 
 function line(payload: StreamPayload): string {
   return `${JSON.stringify(payload)}\n`;
