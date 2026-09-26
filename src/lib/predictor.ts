@@ -1,5 +1,5 @@
 export const INVOKE_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
-export const MODEL = "meta/llama-3.3-70b-instruct";
+export const MODEL = "moonshotai/kimi-k3";
 
 export type TonePreset = "startup" | "enterprise" | "faang";
 

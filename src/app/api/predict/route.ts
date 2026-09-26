@@ -62,8 +62,8 @@ export async function POST(request: Request) {
             jobDescription,
         },
       ],
-      temperature: 0.2,
-      top_p: 0.7,
+      temperature: 1,
+      top_p: 0.95,
       max_tokens: 1024,
       stream: false,
     });
